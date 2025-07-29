@@ -1,89 +1,82 @@
 # 🧳 Mini Job Board
+## 🚀 Live App  🔗 [mini-job-board.vercel.app](https://mini-job-board-mu-ashy.vercel.app)
 
-A full-stack mini job board web application where users can:
+A full-stack job board web application to:
 
-- 🔍 View available job listings
-- ➕ Add new jobs via form
-- 📄 View job details
+- 🔍 Browse job listings  
+- ➕ Add new job posts  
+- 📄 View detailed job info  
 
 ---
+
+
 
 ## 📦 Tech Stack
 
-**Frontend:**
-- ReactJS (with MUI & Framer Motion)
-- React Router
+### 🖥️ Frontend (ReactJS)
+- React 19 + React Router v6
+- MUI (Material UI)
+- Framer Motion
+- React Select
+- React Toastify
 - Axios
+- Lodash.debounce
 
-**Backend:**
-- Node.js + Express.js
-- MongoDB (with Mongoose)
-- Input Validation (server + client)
-- REST API Architecture
-
----
-
-## 🌐 Live Demo
-
-> **URL:** [https://your-deployed-url.com](https://your-deployed-url.com)  
-> **API:** MongoDB Atlas + Render (or local MongoDB)
+### 🔙 Backend (ExpressJS)
+- Express 5
+- MongoDB + Mongoose
+- express-validator
+- dotenv
+- cors
+- nodemon (dev only)
 
 ---
 
-## 🛠 Features
+## 🧠 Features
 
-### 🎯 Core Features
+### 👀 Job Board
+- View jobs in a responsive grid
+- Search by title (debounced)
+- Filter by location (dropdown)
+- Click job to view full details
 
-- View all jobs in a clean, responsive grid UI
-- Search jobs by title (debounced)
-- Filter jobs by location (React-Select)
-- View detailed job info
-- Add new job with full form
-- Locations stored in DB (no duplicates)
+### 📝 Job Form
+- Add new job with validation
+- Locations auto-saved (no duplicates)
 
 ### ✅ Validation
+- Client-side: Required fields enforced
+- Server-side: Input validation + error format
 
-- **Client-side**: All inputs required
-- **Server-side**: API validation + proper error response format
-
-### 🧃 UX Enhancements
-
-- MUI Input Fields
-- Toast Notifications via `react-toastify`
-- Loading Spinner using custom component
-- Animations via Framer Motion
+### 🎨 UX Enhancements
+- MUI styled form & components
+- Animations with Framer Motion
+- Toast notifications
+- Custom loading spinner
 
 ---
 
-## 🧪 API Endpoints
+## 🔌 API Summary
 
-### 🔹 Jobs
+| Endpoint           | Method | Description        |
+|--------------------|--------|--------------------|
+| `/api/jobs`        | GET    | Get all jobs       |
+| `/api/jobs/:id`    | GET    | Get job by ID      |
+| `/api/jobs`        | POST   | Create new job     |
+| `/api/locations`   | GET    | Get all locations  |
+| `/api/locations`   | POST   | Add new location   |
 
-| Method | Endpoint         | Description            |
-|--------|------------------|------------------------|
-| GET    | `/api/jobs`      | Fetch all jobs         |
-| GET    | `/api/jobs/:id`  | Fetch single job       |
-| POST   | `/api/jobs`      | Create a new job       |
-
-### 🔹 Locations
-
-| Method | Endpoint            | Description             |
-|--------|---------------------|-------------------------|
-| GET    | `/api/locations`    | Get all locations       |
-| POST   | `/api/locations`    | Add a new location      |
-
-> All API responses follow the format:
-
-```json
+```md
+> All responses follow:
 {
   "status": true,
-  "message": "Jobs fetched",
+  "message": "Success message",
   "data": [ ... ]
 }
 ```
 
 # 📂 Folder Structure
-```json
+```md
 mini-job-board/
 ├── client/              # React frontend
 │   ├── public/
@@ -125,9 +118,9 @@ npm install
 #### Create a .env file inside the /server folder:
 ```bash Copy
 MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/jobboard
-PORT=5000
+PORT=5050
 ```
-#### Then start the backend server : Server will run at http://localhost:5000 
+#### Then start the backend server : Server will run at http://localhost:5050 
 ```bash Copy
 npm run dev
 ```
@@ -144,9 +137,9 @@ npm start
 ```
 
 # 🚀 Deployment
-``` bash
-Frontend : Vercel / Netlify
-Backend  : Render.com / Railway
+``` md
+Frontend : Vercel
+Backend  : Render.com
 Database : MongoDB Atlas
 ```
 

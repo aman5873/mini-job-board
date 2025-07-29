@@ -9,7 +9,9 @@ import {
   TextField,
   Alert,
   Button,
+  InputAdornment,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import Select from "react-select";
 import debounce from "lodash.debounce";
 
@@ -31,13 +33,11 @@ const HomePage = () => {
 
       const jobRes = await fetchAllJobs();
       const locRes = await fetchAllLocations();
-
-      if (jobRes.status) {
+      if (jobRes?.status) {
         setJobs(jobRes.data);
         setFilteredJobs(jobRes.data);
       }
-
-      if (locRes.status) {
+      if (locRes?.status) {
         const options = locRes.data.map((loc) => ({
           label: loc.name,
           value: loc.name,
@@ -102,21 +102,25 @@ const HomePage = () => {
           </Button>
         </Link>
       </Box>
-
-      <Box
-        display="flex"
-        gap={2}
-        mb={3}
-        flexWrap="wrap"
-        style={{ alignItems: "center" }}
-      >
+      <Box display="flex" gap={2} mb={3} flexWrap="wrap" alignItems="center">
         <TextField
           label="Search by Title"
           variant="outlined"
           value={searchTitle}
           onChange={handleTitleChange}
+          fullWidth
+          sx={{ minWidth: { xs: "100%", sm: "300px" }, maxWidth: "300px" }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
         />
-        <Box width={200}>
+        <Box
+          sx={{ width: { xs: "100%", sm: "200px" } }} // xs: full, sm+: fixed
+        >
           <Select
             placeholder="Filter by City"
             options={cityOptions}

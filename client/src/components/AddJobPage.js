@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+
 import {
   Box,
   TextField,
@@ -43,7 +44,14 @@ const AddJobPage = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="center" mt={5}>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
+      gap="20px"
+      mt={5}
+    >
       <Paper elevation={3} sx={{ padding: 4, maxWidth: 600, width: "100%" }}>
         <Typography variant="h5" mb={3}>
           Add New Job
@@ -117,6 +125,12 @@ const AddJobPage = () => {
           </Button>
         </form>
       </Paper>
+
+      <Link to="/" style={{ textDecoration: "none" }}>
+        <Button variant="contained" color="primary">
+          Back To Home
+        </Button>
+      </Link>
     </Box>
   );
 };

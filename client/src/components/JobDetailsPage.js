@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+
 import {
   Box,
   Typography,
@@ -8,6 +9,7 @@ import {
   Alert,
   Chip,
   Divider,
+  Button,
 } from "@mui/material";
 import { fetchJobById } from "../functions/jobs_ops";
 
@@ -55,7 +57,14 @@ function JobDetailsPage() {
   if (!job) return null;
 
   return (
-    <Box mt={5} display="flex" justifyContent="center">
+    <Box
+      mt={5}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
+      gap="20px"
+    >
       <Paper elevation={3} sx={{ padding: 4, maxWidth: 800, width: "100%" }}>
         <Typography variant="h4" gutterBottom>
           {job.title}
@@ -75,6 +84,11 @@ function JobDetailsPage() {
           {job.description}
         </Typography>
       </Paper>
+      <Link to="/" style={{ textDecoration: "none" }}>
+        <Button variant="contained" color="primary">
+          Back To Home
+        </Button>
+      </Link>
     </Box>
   );
 }
