@@ -80,59 +80,101 @@ A full-stack mini job board web application where users can:
   "message": "Jobs fetched",
   "data": [ ... ]
 }
+```
 
-
-### 📂 Folder Structure
-bash
-Copy
-Edit
+# 📂 Folder Structure
+```json
 mini-job-board/
-├── client/          # React frontend
-├── server/          # Express backend
+├── client/              # React frontend
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── functions/   # API functions (fetchAllJobs, etc.)
+│   │   ├── pages/       # Pages like Home, AddJob, JobDetails
+│   │   └── utils/       # Spinner, Toast configs
+│   ├── package.json
+│   └── .env             # React client environment
+├── server/              # Express backend
+│   ├── config/          # MongoDB connection setup
+│   ├── controllers/     # Job & Location controllers
+│   ├── middleware/      # Validators
+│   ├── models/          # Mongoose schemas
+│   ├── routes/          # jobRoutes, locationRoutes
+│   ├── server.js        # Entry point
+│   ├── package.json
+│   └── .env             # Server environment
 ├── .gitignore
 └── README.md
-⚙️ Setup Instructions
-1. Clone the Repository
-bash
-Copy
-Edit
+```
+
+
+# ⚙️ Setup Instructions
+
+## 1️⃣ Clone the Repository
+```bash Copy
 git clone https://github.com/your-username/mini-job-board.git
 cd mini-job-board
-2. Backend Setup
-bash
-Copy
-Edit
+```
+
+## 2️⃣ Backend Setup
+```bash Copy
 cd server
 npm install
-Create a .env file in /server:
+```
 
-env
-Copy
-Edit
+#### Create a .env file inside the /server folder:
+```bash Copy
 MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/jobboard
 PORT=5000
-Start server:
-
-bash
-Copy
-Edit
+```
+#### Then start the backend server : Server will run at http://localhost:5000 
+```bash Copy
 npm run dev
-3. Frontend Setup
-bash
-Copy
-Edit
+```
+
+## 3️⃣ Frontend Setup
+```bash Copy
 cd ../client
 npm install
+```
+
+#### Then start the React app : Frontend will run at http://localhost:3000
+``` bash Copy
 npm start
-🚀 Deployment
-Frontend: Vercel / Netlify
+```
 
-Backend: Render.com / Railway
+# 🚀 Deployment
+``` bash
+Frontend : Vercel / Netlify
+Backend  : Render.com / Railway
+Database : MongoDB Atlas
+```
 
-DB: MongoDB Atlas (IP whitelist: 0.0.0.0/0 for development)
-
-📄 License
+# 📄 License
 This project is licensed under the MIT License.
 
-🙋‍♂️ Author
-Aman Chauhan
+
+## 🙋‍♂️ Author
+
+### 👨‍💻 Aman Chauhan
+
+💼 Full Stack Developer  
+🚀 Passionate about building intuitive UIs and scalable backend systems  
+📬 Reach out for collaborations, suggestions, or contributions!
+
+---
+
+🔗 **Connect with me:**
+
+- 🌐 [Portfolio](https://portfolio-abcb2.web.app/)  
+- 💼 [LinkedIn](https://www.linkedin.com/in/iaman07)  
+- ✉️ Email: chauhanaman4002@gmail.com  
+
+> 🤝 Feel free to fork this repo, open issues, or send pull requests.  
+> Contributions are always welcome and appreciated!
+
+---
+
+
+
+
