@@ -1,5 +1,6 @@
-# 🧳 Mini Job Board
-## 🚀 Live App  🔗 [mini-job-board.vercel.app](https://mini-job-board-mu-ashy.vercel.app)
+## 🧳 Mini Job Board
+## 🚀 Live App  
+🔗 [mini-job-board.vercel.app](https://mini-job-board-mu-ashy.vercel.app)
 
 A full-stack job board web application to:
 
@@ -75,7 +76,7 @@ A full-stack job board web application to:
 }
 ```
 
-# 📂 Folder Structure
+## 📂 Folder Structure
 ```md
 mini-job-board/
 ├── client/              # React frontend
@@ -101,7 +102,7 @@ mini-job-board/
 ```
 
 
-# ⚙️ Setup Instructions
+## ⚙️ Setup Instructions
 
 ## 1️⃣ Clone the Repository
 ```bash Copy
@@ -136,14 +137,14 @@ npm install
 npm start
 ```
 
-# 🚀 Deployment
+## 🚀 Deployment
 ``` md
 Frontend : Vercel
 Backend  : Render.com
 Database : MongoDB Atlas
 ```
 
-# 📄 License
+## 📄 License
 This project is licensed under the MIT License.
 
 
