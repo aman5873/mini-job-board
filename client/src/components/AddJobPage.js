@@ -52,7 +52,14 @@ const AddJobPage = () => {
       gap="20px"
       mt={5}
     >
-      <Paper elevation={3} sx={{ padding: 4, maxWidth: 600, width: "100%" }}>
+      <Paper
+        elevation={3}
+        sx={{
+          padding: { xs: 1, sm: 3, md: 4 },
+          width: "100%",
+          maxWidth: { xs: "90%", sm: "90%", md: "80%" },
+        }}
+      >
         <Typography variant="h5" mb={3}>
           Add New Job
         </Typography>

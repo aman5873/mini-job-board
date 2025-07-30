@@ -64,13 +64,21 @@ function JobDetailsPage() {
       alignItems="center"
       flexDirection="column"
       gap="20px"
+      px={{ xs: 2, sm: 3, md: 4 }} // Padding for small to medium screens
     >
-      <Paper elevation={3} sx={{ padding: 4, maxWidth: 800, width: "100%" }}>
-        <Typography variant="h4" gutterBottom>
+      <Paper
+        elevation={3}
+        sx={{
+          padding: { xs: 2, sm: 3, md: 4 },
+          width: "100%",
+          maxWidth: { xs: "95%", sm: "90%", md: "80%" },
+        }}
+      >
+        <Typography variant="h5" gutterBottom>
           {job.title}
         </Typography>
 
-        <Typography variant="h6" color="text.secondary">
+        <Typography variant="subtitle1" color="text.secondary">
           {job.company} — {job.location}
         </Typography>
 
@@ -84,6 +92,7 @@ function JobDetailsPage() {
           {job.description}
         </Typography>
       </Paper>
+
       <Link to="/" style={{ textDecoration: "none" }}>
         <Button variant="contained" color="primary">
           Back To Home
