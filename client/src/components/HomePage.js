@@ -10,6 +10,7 @@ import {
   Alert,
   Button,
   InputAdornment,
+  Chip,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import Select from "react-select";
@@ -17,8 +18,61 @@ import debounce from "lodash.debounce";
 
 import { fetchAllJobs, fetchAllLocations } from "../functions/jobs_ops";
 import Spinner from "../utils/spinner";
+import { useUser } from "../context/UserContext";
+import JobFormModal, { initJobObj } from "./JobFormModal";
+import moment from "moment";
 
+export function JobInfoCard({ job, children, status }) {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.01 }}
+      transition={{ type: "spring", stiffness: 300 }}
+      style={{ marginTop: 20 }}
+    >
+      <Link to={`/job/${job._id}`} style={{ textDecoration: "none" }}>
+        <Card sx={{ height: "100%", cursor: "pointer" }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              {job?.title}
+            </Typography>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="body2" color="text.secondary">
+                {job?.company}
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                color="text.secondary"
+                sx={{ fontWeight: "bold" }}
+              >
+                {moment(job?.createdAt).fromNow()}
+              </Typography>
+            </div>
+            <Typography variant="body2">
+              {job?.location} &bull; {job?.type}
+            </Typography>
+            {status && (
+              <Box mt={1}>
+                <Chip label={status} color="primary" />
+              </Box>
+            )}
+          </CardContent>
+        </Card>
+      </Link>
+      {children}
+    </motion.div>
+  );
+}
 const HomePage = () => {
+  const { user } = useUser();
+
+  const [modalOpen, setModalOpen] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [searchTitle, setSearchTitle] = useState("");
@@ -26,30 +80,29 @@ const HomePage = () => {
   const [cityOptions, setCityOptions] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const loadData = async () => {
+    setLoading(true);
+    const jobRes = await fetchAllJobs();
+    const locRes = await fetchAllLocations();
+    if (jobRes?.status) {
+      setJobs(jobRes.data);
+      setFilteredJobs(jobRes.data);
+    }
+    if (locRes?.status) {
+      const options = locRes.data.map((loc) => ({
+        label: loc.name,
+        value: loc.name,
+      }));
+      setCityOptions(options);
+    }
+
+    setLoading(false);
+  };
+
   // Fetch jobs and cities
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-
-      const jobRes = await fetchAllJobs();
-      const locRes = await fetchAllLocations();
-      if (jobRes?.status) {
-        setJobs(jobRes.data);
-        setFilteredJobs(jobRes.data);
-      }
-      if (locRes?.status) {
-        const options = locRes.data.map((loc) => ({
-          label: loc.name,
-          value: loc.name,
-        }));
-        setCityOptions(options);
-      }
-
-      setLoading(false);
-    };
-
     loadData();
-  }, []);
+  }, [user]);
 
   // Debounced title filter
   const debouncedFilter = useMemo(
@@ -95,12 +148,24 @@ const HomePage = () => {
         flexWrap="wrap"
       >
         <Typography variant="h4">Job Listings</Typography>
+        {modalOpen && (
+          <JobFormModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            job={initJobObj}
+            onRefresh={loadData}
+          />
+        )}
 
-        <Link to="/add-job" style={{ textDecoration: "none" }}>
-          <Button variant="contained" color="primary">
+        {user?.user_type === "admin" && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setModalOpen(true)}
+          >
             + Add Job
           </Button>
-        </Link>
+        )}
       </Box>
       <Box display="flex" gap={2} mb={3} flexWrap="wrap" alignItems="center">
         <TextField
@@ -142,27 +207,13 @@ const HomePage = () => {
           gap={2}
         >
           {filteredJobs.map((job) => (
-            <motion.div
+            <JobInfoCard
               key={job._id}
-              whileHover={{ scale: 1.03 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <Link to={`/job/${job._id}`} style={{ textDecoration: "none" }}>
-                <Card sx={{ height: "100%", cursor: "pointer" }}>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {job.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {job.company}
-                    </Typography>
-                    <Typography variant="body2">
-                      {job.location} &bull; {job.type}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Link>
-            </motion.div>
+              job={job}
+              status={
+                job?.is_applied ? "Applied" : job?.is_admin ? "Posted" : null
+              }
+            />
           ))}
         </Box>
       )}

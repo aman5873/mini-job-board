@@ -1,24 +1,41 @@
+// routes/jobRoutes
 const express = require("express");
 const router = express.Router();
 
-const {
-  getAllJobs,
-  getJobById,
-  createJob,
-} = require("../controllers/jobController");
-
+const jobController = require("../controllers/jobController");
 const {
   validateJob,
   handleValidationErrors,
 } = require("../middleware/jobValidator");
+const {
+  verifyToken,
+  isAdmin,
+  attachUserIfExists,
+} = require("../middleware/auth");
 
-// GET all jobs
-router.get("/", getAllJobs);
+// Public - view jobs
+router.get("/", attachUserIfExists, jobController.getAllJobs);
 
-// GET job by ID
-router.get("/:id", getJobById);
+// router.get("/my-listings", verifyToken, );
+// Protected route for user’s listings
+router.get("/my-listings", verifyToken, jobController.getJobsByUser);
 
-// POST new job with validation
-router.post("/", validateJob, handleValidationErrors, createJob);
+router.get("/:id", attachUserIfExists, jobController.getJobById);
+
+// Admin only - create job
+router.post(
+  "/",
+  verifyToken,
+  isAdmin,
+  validateJob,
+  handleValidationErrors,
+  jobController.createJob
+);
+
+// Admin only - update job
+router.put("/", verifyToken, isAdmin, jobController.updateJob);
+
+// Admin only - delete job
+router.delete("/:id", verifyToken, isAdmin, jobController.deleteJob);
 
 module.exports = router;

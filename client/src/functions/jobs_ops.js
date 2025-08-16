@@ -52,3 +52,16 @@ export const postNewJob = async (jobData) => {
     };
   }
 };
+
+// Put new job
+export const updateJob = async (jobData) => {
+  try {
+    const res = await axios.put(`${API_HOST}/api/jobs`, jobData);
+    return res.data; // { status, message, data }
+  } catch (error) {
+    return {
+      status: false,
+      message: error?.response?.data?.message || "Failed to update job",
+    };
+  }
+};

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import moment from "moment";
 
+import { toast } from "react-toastify";
 import {
   Box,
   Typography,
@@ -12,29 +14,54 @@ import {
   Button,
 } from "@mui/material";
 import { fetchJobById } from "../functions/jobs_ops";
+import { useUser } from "../context/UserContext";
+import { API_HOST } from "../constants/config";
+import JobFormModal from "./JobFormModal";
+import apiClient from "../utils/apiClient";
 
 function JobDetailsPage() {
+  const { user } = useUser();
   const { id } = useParams();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const applyToJob = async (jobId) => {
+    try {
+      const { data } = await apiClient.post(
+        `${API_HOST}/api/applications/apply`,
+        {
+          jobId,
+        }
+      );
+      if (data?.status) {
+        toast.success(data?.message || `Application submitted`);
+      } else {
+        toast.error(data.message || "Something went wrong while applying");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "Something went wrong while applying");
+    }
+  };
+  const loadJob = async () => {
+    setLoading(true);
+    const res = await fetchJobById(id);
+
+    if (res.status) {
+      setJob(res.data);
+      setError("");
+    } else {
+      setError(res.message || "Failed to load job details");
+      setJob(null);
+    }
+
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const loadJob = async () => {
-      setLoading(true);
-      const res = await fetchJobById(id);
-
-      if (res.status) {
-        setJob(res.data);
-        setError("");
-      } else {
-        setError(res.message || "Failed to load job details");
-        setJob(null);
-      }
-
-      setLoading(false);
-    };
-
     loadJob();
   }, [id]);
 
@@ -66,6 +93,14 @@ function JobDetailsPage() {
       gap="20px"
       px={{ xs: 2, sm: 3, md: 4 }} // Padding for small to medium screens
     >
+      {modalOpen && (
+        <JobFormModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          job={job} // pass a job object here for edit mode
+          onRefresh={loadJob}
+        />
+      )}
       <Paper
         elevation={3}
         sx={{
@@ -78,13 +113,55 @@ function JobDetailsPage() {
           {job.title}
         </Typography>
 
-        <Typography variant="subtitle1" color="text.secondary">
-          {job.company} — {job.location}
-        </Typography>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            {job?.company}
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            color="text.secondary"
+            sx={{ fontWeight: "bold" }}
+          >
+            {moment(job?.createdAt).fromNow()}
+          </Typography>
+        </div>
 
-        <Box mt={2}>
-          <Chip label={job.type} color="primary" />
-        </Box>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+          }}
+        >
+          <Box mt={2}>
+            <Chip label={job.type} color="primary" />
+          </Box>
+          {job?.is_admin ? (
+            <Button
+              onClick={() => {
+                setModalOpen(true);
+              }}
+            >
+              Edit Job
+            </Button>
+          ) : user ? (
+            job.is_applied ? (
+              <Box mt={2}>
+                <Chip label={"Applied"} color="primary" />
+              </Box>
+            ) : (
+              <Button onClick={() => applyToJob(job._id)}>Apply</Button>
+            )
+          ) : (
+            <Button onClick={() => navigate("/login")}>Login to Apply</Button>
+          )}
+        </div>
 
         <Divider sx={{ my: 3 }} />
 
