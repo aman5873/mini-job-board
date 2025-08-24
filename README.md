@@ -11,7 +11,6 @@ A full-stack job board web application to:
 ---
 
 
-
 ## 📦 Tech Stack
 
 ### 🖥️ Frontend (ReactJS)
