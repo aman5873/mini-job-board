@@ -30,6 +30,7 @@ A full-stack job board web application to:
 - dotenv
 - cors
 - nodemon (dev only)
+- **Redis caching (optional)**
 
 ---
 
@@ -57,8 +58,54 @@ A full-stack job board web application to:
 
 ---
 
-## 🔌 API Summary
+## ⚡ Redis Caching & Fallback
 
+The backend uses Redis to cache job listings and reduce DB load.  
+
+**Key points:**
+- `REDIS_URL` environment variable is optional.
+- If Redis connection fails (wrong URL, unreachable server, or local dev), the API **automatically falls back to the DB**.
+- Requests **will never hang** or fail due to Redis issues.
+- Cache TTL is configurable via `REDIS_TTL` (default 60s).
+
+**Example `.env` for Redis:**
+  ```env
+  REDIS_URL=redis://<username>:<password>@<host>:6379
+  REDIS_TTL=60
+  ```
+  You can safely leave REDIS_URL empty in development.
+
+### 🔁 Redis Fallback Flow
+```text
+           +-----------------+
+           |   API Request   |
+           +--------+--------+
+                    |
+                    v
+            +-------+-------+
+            |  Redis Cache  |
+            +-------+-------+
+                    |
+           Cache Hit | Cache Miss
+          -----------+-----------
+          |                     |
+          v                     v
+  Return cached data        Fetch from DB
+                             |
+                             v
+                      +------+------+
+                      | Save to Redis |
+                      +------+------+
+                             |
+                             v
+                        Return data
+```
+
+✅ If Redis is unavailable, the API fetches directly from the database without delaying requests.
+
+---
+
+## 🔌 API Summary
 | Endpoint           | Method | Description        |
 |--------------------|--------|--------------------|
 | `/api/jobs`        | GET    | Get all jobs       |
@@ -89,11 +136,12 @@ mini-job-board/
 │   ├── package.json
 │   └── .env             # React client environment
 ├── server/              # Express backend
-│   ├── config/          # MongoDB connection setup
+│   ├── config/          # MongoDB + Redis setup
 │   ├── controllers/     # Job & Location controllers
 │   ├── middleware/      # Validators
 │   ├── models/          # Mongoose schemas
 │   ├── routes/          # jobRoutes, locationRoutes
+│   ├── utils/           # cache wrapper for Redis fallback
 │   ├── server.js        # Entry point
 │   ├── package.json
 │   └── .env             # Server environment
@@ -106,7 +154,7 @@ mini-job-board/
 
 ## 1️⃣ Clone the Repository
 ```bash Copy
-git clone https://github.com/your-username/mini-job-board.git
+git clone https://github.com/aman5873/mini-job-board.git
 cd mini-job-board
 ```
 

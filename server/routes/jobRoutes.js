@@ -1,7 +1,6 @@
 // routes/jobRoutes
 const express = require("express");
 const router = express.Router();
-
 const jobController = require("../controllers/jobController");
 const {
   validateJob,
@@ -13,16 +12,16 @@ const {
   attachUserIfExists,
 } = require("../middleware/auth");
 
-// Public - view jobs
+// Public - view all jobs
 router.get("/", attachUserIfExists, jobController.getAllJobs);
 
-// router.get("/my-listings", verifyToken, );
-// Protected route for user’s listings
+// Protected - user's jobs
 router.get("/my-listings", verifyToken, jobController.getJobsByUser);
 
+// Single job
 router.get("/:id", attachUserIfExists, jobController.getJobById);
 
-// Admin only - create job
+// Admin routes
 router.post(
   "/",
   verifyToken,
@@ -31,11 +30,7 @@ router.post(
   handleValidationErrors,
   jobController.createJob
 );
-
-// Admin only - update job
 router.put("/", verifyToken, isAdmin, jobController.updateJob);
-
-// Admin only - delete job
 router.delete("/:id", verifyToken, isAdmin, jobController.deleteJob);
 
 module.exports = router;
