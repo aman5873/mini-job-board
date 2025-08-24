@@ -7,7 +7,7 @@ A full-stack job board web application to:
 - 🔍 Browse job listings  
 - ➕ Add new job posts  
 - 📄 View detailed job info  
-
+- 🔑 Login using Google OAuth
 ---
 
 
@@ -22,6 +22,7 @@ A full-stack job board web application to:
 - React Toastify
 - Axios
 - Lodash.debounce
+- **Google OAuth Login**
 
 ### 🔙 Backend (ExpressJS)
 - Express 5
@@ -45,6 +46,11 @@ A full-stack job board web application to:
 ### 📝 Job Form
 - Add new job with validation
 - Locations auto-saved (no duplicates)
+
+### 🔑 Google Login
+- Login using Google OAuth 2.0  
+- User info saved on backend  
+- Works seamlessly with job posting & application features  
 
 ### ✅ Validation
 - Client-side: Required fields enforced
@@ -106,6 +112,8 @@ The backend uses Redis to cache job listings and reduce DB load.
 ---
 
 ## 🔌 API Summary
+
+### Jobs & Locations
 | Endpoint           | Method | Description        |
 |--------------------|--------|--------------------|
 | `/api/jobs`        | GET    | Get all jobs       |
@@ -113,6 +121,21 @@ The backend uses Redis to cache job listings and reduce DB load.
 | `/api/jobs`        | POST   | Create new job     |
 | `/api/locations`   | GET    | Get all locations  |
 | `/api/locations`   | POST   | Add new location   |
+
+### Applications
+| Endpoint                 | Method | Description                    |
+|--------------------------|--------|--------------------------------|
+| `/api/applications/apply`| POST   | Apply for a job (user only)   |
+| `/api/applications/applied` | GET | Get jobs applied by logged-in user |
+
+### Authentication
+| Endpoint                 | Method | Description                       |
+|--------------------------|--------|-----------------------------------|
+| `/api/auth/login`        | POST   | Login with email/password         |
+| `/api/auth/register`     | POST   | Register new user                 |
+| `/api/auth/refresh-token`| POST   | Refresh access token              |
+| `/api/auth/validate`     | GET    | Validate JWT token                |
+| `/api/auth/google`       | POST   | Login/Register using Google OAuth |
 
 ```md
 > All responses follow:
@@ -124,31 +147,31 @@ The backend uses Redis to cache job listings and reduce DB load.
 ```
 
 ## 📂 Folder Structure
-```md
+```text
 mini-job-board/
-├── client/              # React frontend
-│   ├── public/
+├── client/                  # React frontend
+│   ├── public/              # Static files like index.html, images, fonts
 │   ├── src/
-│   │   ├── components/
-│   │   ├── functions/   # API functions (fetchAllJobs, etc.)
-│   │   ├── pages/       # Pages like Home, AddJob, JobDetails
-│   │   └── utils/       # Spinner, Toast configs
+│   │   ├── components/      # Reusable UI components
+│   │   ├── constants/       # App constants, page configs
+│   │   ├── context/         # React Contexts (UserContext, AlertContext, etc.)
+│   │   ├── functions/       # API calls (fetchAllJobs, createJob, etc.)
+│   │   └── utils/           # Utility functions (spinner, toast config, helpers)
 │   ├── package.json
-│   └── .env             # React client environment
-├── server/              # Express backend
-│   ├── config/          # MongoDB + Redis setup
-│   ├── controllers/     # Job & Location controllers
-│   ├── middleware/      # Validators
-│   ├── models/          # Mongoose schemas
-│   ├── routes/          # jobRoutes, locationRoutes
-│   ├── utils/           # cache wrapper for Redis fallback
-│   ├── server.js        # Entry point
+│   └── .env                 # React environment variables
+├── server/                  # Express backend
+│   ├── config/              # Database and Redis configuration
+│   ├── controllers/         # Route controllers (jobs, locations, auth, applications)
+│   ├── middleware/          # Middleware (auth, validators, error handlers)
+│   ├── models/              # Mongoose schemas
+│   ├── routes/              # API routes (jobRoutes, locationRoutes, authRoutes, applicationRoutes)
+│   ├── utils/               # Helper functions (Redis cache wrapper, etc.)
+│   ├── server.js            # Server entry point
 │   ├── package.json
-│   └── .env             # Server environment
+│   └── .env                 # Server environment variables
 ├── .gitignore
 └── README.md
 ```
-
 
 ## ⚙️ Setup Instructions
 
@@ -164,10 +187,27 @@ cd server
 npm install
 ```
 
-#### Create a .env file inside the /server folder:
-```bash Copy
+### 🔧 Server Environment Variables
+
+Create a `.env` file inside the `/server` folder with the following content:
+
+```env
+PORT=5050                       # Port number for the backend server
+MONGO_USER="<username>"          # MongoDB username
+MONGO_PASS="<password>"          # MongoDB password
+MONGO_DB="db"                    # MongoDB database name
+
+# Full MongoDB connection URI
 MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/jobboard
-PORT=5050
+                                
+
+REDIS_TTL=2592000                # Redis cache TTL in seconds (30 days)
+REDIS_URL="REDIS_URL"            # Redis server URL (optional, fallback to DB if not set)
+
+CLIENT_URL=http://localhost:3000 # URL of the frontend client
+JWT_SECRET="JWT_SECRET"          # Secret for signing JWT access tokens
+JWT_REFRESH_SECRET="JWT_RF_SEC"  # Secret for signing JWT refresh tokens
+                                
 ```
 #### Then start the backend server : Server will run at http://localhost:5050 
 ```bash Copy
@@ -180,16 +220,32 @@ cd ../client
 npm install
 ```
 
+### 🔧 Client Environment Variables
+
+Create a `.env` file inside the `/client` folder with the following content:
+
+```env
+# URL of the backend API
+REACT_APP_API_HOST=http://localhost:5050
+
+# Google OAuth client ID for login
+REACT_APP_GOOGLE_CLIENT_ID=REACT_APP_GOOGLE_CLIENT_ID  
+
+# Optional: Facebook App ID for login             
+REACT_APP_FACEBOOK_APP_ID=REACT_APP_FACEBOOK_APP_ID   
+```
+
 #### Then start the React app : Frontend will run at http://localhost:3000
 ``` bash Copy
 npm start
 ```
 
 ## 🚀 Deployment
-``` md
-Frontend : Vercel
-Backend  : Render.com
-Database : MongoDB Atlas
+```text
+- Frontend : Vercel
+- Backend  : Render.com
+- Database : MongoDB Atlas
+- Optional Caching : Redis (can be hosted on Redis Cloud, AWS ElastiCache, or local)
 ```
 
 ## 📄 License
