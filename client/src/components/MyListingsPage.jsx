@@ -111,7 +111,7 @@ const MyListingsPage = () => {
         <Typography>No listings yet.</Typography>
       ) : (
         listings.map((job) => (
-          <JobInfoCard key={job._id}>
+          <JobInfoCard key={job._id} job={job}>
             <CardActions>
               <Button size="small" onClick={() => setJobToUpdate(job)}>
                 Edit

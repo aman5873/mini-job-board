@@ -86,11 +86,11 @@ const HeaderBar = () => {
         {user ? (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {/* Display welcome message first */}
-            {displayName && (
+            {/* {displayName && (
               <Typography variant="subtitle2" sx={{ ml: 1 }}>
                 Welcome, {displayName}
               </Typography>
-            )}
+            )} */}
             {/* Account Icon */}
             <IconButton size="large" color="inherit" onClick={handleMenuOpen}>
               <AccountCircle />
@@ -156,14 +156,7 @@ const HeaderBar = () => {
           </MenuItem>
         )}
         {user?.user_type === "admin" && (
-          <>
-            <MenuItem
-              component={Link}
-              to="/add-job"
-              onClick={handleMobileMenuClose}
-            >
-              Add Job
-            </MenuItem>
+          <Box>
             <MenuItem
               component={Link}
               to="/my-listings"
@@ -171,7 +164,7 @@ const HeaderBar = () => {
             >
               My Listings
             </MenuItem>
-          </>
+          </Box>
         )}
       </Menu>
     </AppBar>

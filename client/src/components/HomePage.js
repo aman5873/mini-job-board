@@ -23,51 +23,60 @@ import JobFormModal, { initJobObj } from "./JobFormModal";
 import moment from "moment";
 
 export function JobInfoCard({ job, children, status }) {
-  return (
-    <motion.div
-      whileHover={{ scale: 1.01 }}
-      transition={{ type: "spring", stiffness: 300 }}
-      style={{ marginTop: 20 }}
-    >
-      <Link to={`/job/${job._id}`} style={{ textDecoration: "none" }}>
-        <Card sx={{ height: "100%", cursor: "pointer" }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              {job?.title}
-            </Typography>
+  if (job)
+    return (
+      <motion.div
+        whileHover={{ scale: 1.01 }}
+        transition={{ type: "spring", stiffness: 300 }}
+        style={{ marginTop: 20 }}
+      >
+        <Link to={`/job/${job?._id}`} style={{ textDecoration: "none" }}>
+          <Card sx={{ height: "100%", cursor: "pointer" }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                {job?.title}
+              </Typography>
 
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
+                <Typography variant="body2" color="text.secondary">
+                  {job?.company}
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  color="text.secondary"
+                  sx={{ fontWeight: "bold", marginLeft: "auto" }}
+                >
+                  {moment(job?.createdAt).fromNow()}
+                </Typography>
+              </div>
+              <Typography variant="body2">
+                {job?.location} &bull; {job?.type}
+              </Typography>
+              {status && (
+                <Box mt={1}>
+                  <Chip label={status} color="primary" />
+                </Box>
+              )}
+            </CardContent>
             <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation(); // stop the Link
               }}
             >
-              <Typography variant="body2" color="text.secondary">
-                {job?.company}
-              </Typography>
-              <Typography
-                variant="subtitle1"
-                color="text.secondary"
-                sx={{ fontWeight: "bold" }}
-              >
-                {moment(job?.createdAt).fromNow()}
-              </Typography>
+              {children}
             </div>
-            <Typography variant="body2">
-              {job?.location} &bull; {job?.type}
-            </Typography>
-            {status && (
-              <Box mt={1}>
-                <Chip label={status} color="primary" />
-              </Box>
-            )}
-          </CardContent>
-        </Card>
-      </Link>
-      {children}
-    </motion.div>
-  );
+          </Card>
+        </Link>
+      </motion.div>
+    );
 }
 const HomePage = () => {
   const { user } = useUser();
