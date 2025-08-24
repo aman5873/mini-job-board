@@ -39,7 +39,7 @@ app.get("/test", (req, res) => {
 
 // 404 handler
 app.use((req, res) => {
-  console.log("\n-----\n", req.method, req.originalUrl, req.body, "\n-----\n");
+  console.log("\n------\n", req.method, req.originalUrl, req.body, "\n-----\n");
   res.status(404).json({ status: false, message: "Not Found", data: null });
 });
 
